@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.0/css/all.min.css"
+      integrity="sha512-DxV+EoADOkOygM4IR9yXP8Sb2qwgidEmeqAEmDKIOfPRQZOWbXCzLC6vjbZyy0vPisbH2SyW27+ddLVCN+OMzQ=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer"
+    />
+    <link rel="stylesheet" href="css/animate.min.css" />
+    <link rel="stylesheet" href="css/bootstrap.min.css" />
+    <link rel="stylesheet" href="css/main.css" />
+    <title>Bootstrap Project</title>
+  </head>
+  <body>
+    <div id="App">
+      <!-- Start Navbar -->
+      <nav class="navbar navbar-expand-lg bg-dark">
+        <div class="container">
+          <span
+            class="navbar-brand fw-bold fs-3 text-danger animate__animated animate__zoomInLeft"
+            href="#"
+            >First <span class="text-light fs-5 mx-1">Store</span></span
+          >
+          <button
+            class="navbar-toggler"
+            type="button"
+            data-bs-toggle="collapse"
+            data-bs-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent"
+            aria-expanded="false"
+            aria-label="Toggle navigation"
+          >
+            <span class="navbar-toggler-icon"></span>
+          </button>
+          <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <ul class="navbar-nav ms-auto mx-3 mb-2 mb-lg-0">
+              <li class="nav-item mx-3">
+                <button
+                  @click="changeContent(`home`)"
+                  class="nav-link btn btn-light fw-bold text-light"
+                  aria-current="page"
+                >
+                  Home
+                  <i class="fa-solid fa-home text-danger mx-2"></i>
+                </button>
+              </li>
+              <li class="nav-item">
+                <button
+                  @click="changeContent(`cart`)"
+                  class="nav-link btn btn-light fw-bold text-light"
+                  aria-current="page"
+                >
+                  Cart
+                  <i class="fa-solid fa-cart-plus text-danger mx-2"></i>
+                </button>
+              </li>
+            </ul>
+            <form class="d-flex" role="search">
+              <input
+                v-model="searchVal"
+                class="form-control me-2"
+                type="search"
+                placeholder="Search"
+                aria-label="Search"
+              />
+              <button
+                @click="doSearch"
+                class="btn btn-outline-danger"
+                type="button"
+              >
+                Search
+              </button>
+            </form>
+          </div>
+        </div>
+      </nav>
+      <!-- End Navbar -->
+      <!-- Start Home -->
+      <div v-if="path == `home`" class="container my-4">
+        <div class="row">
+          <div v-for="product in filteredProducts" class="col-md-6 col-lg-3">
+            <div class="card my-2">
+              <img
+                src="images/product.jpg"
+                class="card-img-top"
+                style="height: 200px"
+              />
+              <div class="card-body">
+                <h5
+                  class="card-title text-center bg-dark text-danger fw-bold py-2 rounded"
+                >
+                  {{product.title}}
+                </h5>
+                <p class="card-text overflow-auto p-2" style="height: 100px">
+                  {{product.description}}
+                </p>
+                <div class="fw-bold my-2">
+                  <span class="text-primary">Price</span> : {{product.price}}
+                  EGP
+                </div>
+                <div class="fw-bold my-2">
+                  <span class="text-primary">Stock</span> : {{product.stock}}
+                  Peice
+                </div>
+                <div class="fw-bold my-2">
+                  <span class="text-primary">Category</span> :
+                  {{product.category}}
+                </div>
+                <button
+                  :disabled="product.stock == 0"
+                  @click="addToCart(product)"
+                  class="btn btn-success w-100 fw-bold"
+                >
+                  Add To Cart
+                  <li class="fa-solid fa-plus"></li>
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+        <!-- Start Pagination -->
+        <nav aria-label="Page navigation example">
+          <ul class="pagination justify-content-center my-5">
+            <li class="page-item"><a class="page-link" href="#">1</a></li>
+            <li class="page-item"><a class="page-link" href="#">2</a></li>
+            <li class="page-item"><a class="page-link" href="#">3</a></li>
+          </ul>
+        </nav>
+        <!-- End Pagination -->
+      </div>
+      <!-- End Home -->
+      <!-- Start Cart -->
+      <div v-else class="container my-4">
+        <div v-if="cart.length >= 1">
+          <table class="table table-bordered text-center table-hover">
+            <thead>
+              <tr>
+                <th>Item Name</th>
+                <th>Price</th>
+                <th>Quantity</th>
+                <th>Category</th>
+                <th>Total</th>
+                <th>Action</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr v-for="item in cart">
+                <td>{{item.productInfo.title}}</td>
+                <td>{{item.productInfo.price}}</td>
+                <td>{{item.counter}}</td>
+                <td>{{item.productInfo.category}}</td>
+                <td>{{item.productInfo.price * item.counter}}</td>
+                <td>
+                  <button @click="deleteOne(item)" class="btn btn-danger mx-2">
+                    - 1 <i class="fa-solid fa-trash"></i>
+                  </button>
+                  <button @click="deleteAll(item)" class="btn btn-danger">
+                    Delete All <i class="fa-solid fa-trash"></i>
+                  </button>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <div v-else class="alert alert-info text-center fw-bold">
+          No Item Found
+        </div>
+      </div>
+      <!-- End Cart -->
+    </div>
+    <script src="JS/products.js"></script>
+    <script src="JS/bootstrap.bundle.min.js"></script>
+    <script src="JS/vue.global.js"></script>
+    <script src="JS/main.js"></script>
+  </body>
+</html>
